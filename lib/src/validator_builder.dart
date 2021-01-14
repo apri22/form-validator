@@ -9,11 +9,11 @@ typedef Action<T> = Function(T builder);
 class ValidationBuilder {
   ValidationBuilder({
     String localeName,
-    this.optional = false,
+    this.optional = true,
     FormValidatorLocale locale,
     this.requiredMessage,
   }) : _locale = locale ??
-            (localeName == null ? globalLocale : createLocale(localeName)) {
+      (localeName == null ? globalLocale : createLocale(localeName)) {
     ArgumentError.checkNotNull(_locale, 'locale');
     if (optional != true) {
       required(requiredMessage);
@@ -71,8 +71,8 @@ class ValidationBuilder {
   /// If [reverse] is true left builder's error will be displayed otherwise
   /// right builder's error. Because this is default behaviour on most
   /// programming languages.
-  ValidationBuilder or(
-      Action<ValidationBuilder> left, Action<ValidationBuilder> right,
+  ValidationBuilder or(Action<ValidationBuilder> left,
+      Action<ValidationBuilder> right,
       {bool reverse = false}) {
     // Create
     final v1 = ValidationBuilder(locale: _locale);
@@ -105,11 +105,13 @@ class ValidationBuilder {
       add((v) => (v == null || v == '') ? message ?? _locale.required() : null);
 
   /// Value length must be greater than or equal to [minLength]
-  ValidationBuilder minLength(int minLength, [String message]) => add((v) =>
+  ValidationBuilder minLength(int minLength, [String message]) =>
+      add((v) =>
       v.length < minLength ? message ?? _locale.minLength(v, minLength) : null);
 
   /// Value length must be less than or equal to [maxLength]
-  ValidationBuilder maxLength(int maxLength, [String message]) => add((v) =>
+  ValidationBuilder maxLength(int maxLength, [String message]) =>
+      add((v) =>
       v.length > maxLength ? message ?? _locale.maxLength(v, maxLength) : null);
 
   /// Value must match [regExp]
@@ -134,8 +136,9 @@ class ValidationBuilder {
 
   /// Value must be a well formatted phone number
   ValidationBuilder phone([String message]) =>
-      add((v) => !_anyLetter.hasMatch(v) &&
-              _phoneRegExp.hasMatch(v.replaceAll(_nonDigitsExp, ''))
+      add((v) =>
+      !_anyLetter.hasMatch(v) &&
+          _phoneRegExp.hasMatch(v.replaceAll(_nonDigitsExp, ''))
           ? null
           : message ?? _locale.phoneNumber(v));
 
